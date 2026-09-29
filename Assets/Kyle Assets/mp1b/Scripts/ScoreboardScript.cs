@@ -8,7 +8,7 @@ public class ScoreboardScript : MonoBehaviour
     [SerializeField] Material yellowGlow;
     [SerializeField] Material greenGlow;
     
-    [SerializeField] int completedLocks;
+    [SerializeField] bool[] completedLocks;
 
     [SerializeField] Animator door;
     [SerializeField] GameObject exitTeleporter;
@@ -16,7 +16,7 @@ public class ScoreboardScript : MonoBehaviour
     void Start()
     {
         exitTeleporter.SetActive(false);
-        completedLocks = 0;
+        completedLocks = new bool[4];
         PowerCableScript.pluggedIn += HandlePlug;
         CollectibleScript.keycard += HandleKeycard;
         HologramScript.correctSOS += HandleFuel;
@@ -35,7 +35,7 @@ public class ScoreboardScript : MonoBehaviour
         Material[] materials = meshRenderer.materials;
         materials[0] = greenGlow;
         meshRenderer.materials = materials;
-        completedLocks++;
+        completedLocks[0] = true;
     }
 
     public void HandleKeycard(bool keycard) {
@@ -48,7 +48,7 @@ public class ScoreboardScript : MonoBehaviour
             Material[] materials = meshRenderer.materials;
             materials[0] = greenGlow;
             meshRenderer.materials = materials;
-            completedLocks++;
+            completedLocks[1] = true;
             HandleUSB(false);
         }
     }
@@ -63,7 +63,7 @@ public class ScoreboardScript : MonoBehaviour
             Material[] materials = meshRenderer.materials;
             materials[0] = greenGlow;
             meshRenderer.materials = materials;
-            completedLocks++;
+            completedLocks[2] = true;
         }
     }
 
@@ -77,14 +77,14 @@ public class ScoreboardScript : MonoBehaviour
             Material[] materials = meshRenderer.materials;
             materials[0] = greenGlow;
             meshRenderer.materials = materials;
-            completedLocks++;
+            completedLocks[3] = true;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (completedLocks >= 4) {
+        if (completedLocks[0] == true && completedLocks[1] == true && completedLocks[2] == true && completedLocks[3] == true) {
             door.Play("ExitDoorOpen");
             exitTeleporter.SetActive(true);
             this.enabled = false;
